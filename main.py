@@ -14,10 +14,35 @@ def recursive_match(regex_string, user_string):
 
 def main():
     regex_string, user_string = input().split("|")
-    if regex_string == "" and user_string == "":
+    if regex_string == "":
         print(True)
         return
     if regex_string != "" and user_string == "":
+        print(False)
+        return
+    if regex_string[0] == "^" and regex_string[-1] != "$":
+        regex_string = regex_string[1:]
+        if recursive_match(regex_string, user_string[:len(regex_string)]):
+            print(True)
+            return
+        print(False)
+        return
+    if regex_string[-1] == "$" and regex_string[0] != "^":
+        regex_string = regex_string[:-1]
+        user_string = user_string[-len(regex_string):]
+        if recursive_match(regex_string, user_string):
+            print(True)
+            return
+        print(False)
+        return
+    if regex_string[0] == "^" and regex_string[-1] == "$":
+        regex_string = regex_string[1:-1]
+        if len(regex_string) != len(user_string):
+            print(False)
+            return
+        if recursive_match(regex_string, user_string):
+            print(True)
+            return
         print(False)
         return
     for i in range(len(user_string)):
