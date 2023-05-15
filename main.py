@@ -21,6 +21,30 @@ def recursive_match(regex_string, user_string):
     else:
         return False
 
+def regex_check(regex_string, user_string):
+    if regex_string[0] == "^" and regex_string[-1] != "$":
+        regex_string = regex_string[1:]
+        if recursive_match(regex_string, user_string[:len(regex_string)]):
+            return True
+        return False
+    if regex_string[-1] == "$" and regex_string[0] != "^":
+        regex_string = regex_string[:-1]
+        user_string = user_string[-len(regex_string):]
+        if recursive_match(regex_string, user_string):
+            return True
+        return False
+    if regex_string[0] == "^" and regex_string[-1] == "$":
+        regex_string = regex_string[1:-1]
+        if len(regex_string) != len(user_string):
+            return False
+        if recursive_match(regex_string, user_string):
+            return True
+        return False
+    for i in range(len(user_string)):
+        if recursive_match(regex_string, user_string):
+            return True
+        user_string = user_string[i:]
+
 def main():
     regex_string, user_string = input().split("|")
     if regex_string == "":
@@ -29,37 +53,7 @@ def main():
     if regex_string != "" and user_string == "":
         print(False)
         return
-    if regex_string[0] == "^" and regex_string[-1] != "$":
-        regex_string = regex_string[1:]
-        if recursive_match(regex_string, user_string[:len(regex_string)]):
-            print(True)
-            return
-        print(False)
-        return
-    if regex_string[-1] == "$" and regex_string[0] != "^":
-        regex_string = regex_string[:-1]
-        user_string = user_string[-len(regex_string):]
-        if recursive_match(regex_string, user_string):
-            print(True)
-            return
-        print(False)
-        return
-    if regex_string[0] == "^" and regex_string[-1] == "$":
-        regex_string = regex_string[1:-1]
-        if len(regex_string) != len(user_string):
-            print(False)
-            return
-        if recursive_match(regex_string, user_string):
-            print(True)
-            return
-        print(False)
-        return
-    for i in range(len(user_string)):
-        if recursive_match(regex_string, user_string):
-            print(True)
-            return
-        user_string = user_string[i:]
-    print(False)
+    print(regex_check(regex_string, user_string))  
 
 if __name__ == "__main__":
     main()
