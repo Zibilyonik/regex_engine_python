@@ -1,5 +1,14 @@
 #Python3
 def recursive_match(regex_string, user_string):
+    """Match a regex string to a user string.
+
+    Args:
+        regex_string (string): The regex string to match.
+        user_string (string): The user string to match.
+
+    Returns:
+        bool: True if the regex string matches the user string, False otherwise.
+    """
     if regex_string == "":
         return True
     if regex_string != "" and user_string == "":
