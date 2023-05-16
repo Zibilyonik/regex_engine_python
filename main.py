@@ -12,6 +12,19 @@ def recursive_match(regex_string, user_string, index=0):
     """
     if index == len(regex_string):
         return True
+    if regex_string[0] == "^":
+        regex_string = regex_string[1:]
+        while regex_string[index + 1: index + 2] not in ["*","?","+"]:
+            if regex_string[index] != user_string[index]:
+                return False
+            index += 1
+    if regex_string[-1] == "$":
+        regex_string = regex_string[:-1]
+        while regex_string[-1] not in ["*","?","+"]:
+            if regex_string[index] != user_string[index] and regex_string[index] != ".":
+                return False
+            regex_string = regex_string[:-1]
+            user_string = user_string[:-1]
     if index + 1 != len(regex_string):
         if regex_string[index + 1:index + 2] == "*":
             star_letter = regex_string[index]
@@ -47,19 +60,6 @@ def recursive_match(regex_string, user_string, index=0):
 
 
 def regex_check(regex_string, user_string):
-    if regex_string[0] == "^" and regex_string[-1] != "$":
-        regex_string = regex_string[1:]
-        user_string = user_string[: len(regex_string)]
-        return recursive_match(regex_string, user_string)
-    if regex_string[-1] == "$" and regex_string[0] != "^":
-        regex_string = regex_string[:-1]
-        user_string = user_string[-len(regex_string) :]
-        return recursive_match(regex_string, user_string)
-    if regex_string[0] == "^" and regex_string[-1] == "$":
-        regex_string = regex_string[1:-1]
-        if len(regex_string) != len(user_string) and ["*","?","+"] not in regex_string:
-            return False
-        return recursive_match(regex_string, user_string)
     if len(regex_string) != len(user_string):
         for i in range(len(user_string)):
             if recursive_match(regex_string, user_string[i:]):
