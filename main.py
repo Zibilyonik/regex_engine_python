@@ -15,12 +15,13 @@ def recursive_match(regex_string, user_string, index=0):
     if regex_string[0] == "^":
         regex_string = regex_string[1:]
         while regex_string[index + 1: index + 2] not in ["*","?","+"]:
-            if regex_string[index] != user_string[index]:
-                return False
-            index += 1
-            if (regex_string[index + 1: index + 2] == "$" and len(user_string) == index + 1) or index == len(regex_string):
+            if regex_string[index: index + 1] == "$":
+                if regex_string[index + 1:] != "":
+                    return False
                 return True
-        recursive_match(regex_string, user_string, index)
+            if regex_string[index:index + 1] != user_string[index:index + 1] and regex_string[index: index + 1] != ".":
+                return recursive_match(regex_string, user_string, index)
+            index += 1
     if regex_string[-1] == "$":
         regex_string = regex_string[:-1]
         saved_index = index
@@ -41,12 +42,12 @@ def recursive_match(regex_string, user_string, index=0):
                     return recursive_match(regex_string, user_string, saved_index)
                 regex_string = regex_string[:-2]
                 return recursive_match(regex_string, user_string, saved_index)
-            if regex_string[-index-1] != user_string[-index-1] and regex_string[-index-1] != ".":
+            if regex_string[-index-1:-index] != user_string[-index-1:-index] and regex_string[-index-1:-index] != ".":
                 return False
             index += 1
-            if regex_string == "":
+            if regex_string[-index-1:-index] == "":
                 return True
-        if (regex_string[-index-1] != user_string[-index-1] and regex_string[-index-1] != "+") or (regex_string[-index-2] != user_string[-index-2] and regex_string[-index-2] != "."):
+        if (regex_string[-index-1:-index] != user_string[-index-1:-index] and regex_string[-index-1:-index] != "+") or (regex_string[-index-2:-index-1] != user_string[-index-2:-index-1] and regex_string[-index-2:-index-1] != "."):
             return False
         return recursive_match(regex_string, user_string, saved_index)
     if index + 1 != len(regex_string):
